@@ -1,0 +1,3 @@
+VCS_IGNORE = (
+    ".gitignore",
+)
