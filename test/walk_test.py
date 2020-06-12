@@ -34,8 +34,7 @@ class TestWalk(unittest.TestCase):
     def test_walk(self):
 
         total = []
-        for value in walk(self.path, "abc"):
-            total.append(value)
-            print(value)
+        for _, _, matches in walk(self.path, "abc"):
+            total.append(matches)
 
         self.assertEqual(len(total), 2)

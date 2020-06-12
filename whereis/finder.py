@@ -4,6 +4,7 @@ from typing import List, Callable, Union
 
 from whereis.utils import Colors
 
+
 # TODO
 # Add .gitignore capabilities
 
@@ -37,15 +38,14 @@ def create_pattern(pattern: str) -> Callable[[str], Union[List[str], None]]:
     return match_regular
 
 
-def walk(dir: str, pattern: str, symlinks: bool = False, hidden=False, vcs=False):
-
+def walk(src: str, pattern: str, symlinks: bool = False, hidden=False, vcs=False):
     matcher = create_pattern(pattern=pattern)
 
     """
         Walks given directory in top down fashion, meaning current dir files /
         get returned first.
     """
-    for path, directories, files in os.walk(dir, topdown=True, followlinks=symlinks):
+    for path, directories, files in os.walk(src, topdown=True, followlinks=symlinks):
 
         if not hidden:
             directories[:] = [f for f in directories if not f.startswith(".")]
@@ -53,5 +53,16 @@ def walk(dir: str, pattern: str, symlinks: bool = False, hidden=False, vcs=False
         for file in files:
             match = matcher(file)
             if match:
-                yield match
-                print(os.path.join(path, f"{Colors.GREEN}{file}{Colors.ENDC}"))
+                yield path, file, match
+
+
+class ColorPrinter:
+
+    @classmethod
+    def print(cls, path: str, to_color: str):
+        print(os.path.join(path, f"{Colors.GREEN}{to_color}{Colors.ENDC}"))
+
+
+def run(src, pattern):
+    for path, file, _ in walk(src=src, pattern=pattern):
+        ColorPrinter.print(path, file)
