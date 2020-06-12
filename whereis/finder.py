@@ -1,35 +1,34 @@
 import os
 import re
-from typing import List, Callable
+from typing import List, Callable, Union
+
+from whereis.utils import Colors
 
 # TODO
 # Add .gitignore capabilities
-from whereis.utils import Colors
 
 
-def create_pattern(pattern: str):
+def create_pattern(pattern: str) -> Callable[[str], Union[List[str], None]]:
     """
     Creates Pattern based on flags
     :param pattern: String with regex pattern
     :return: Pattern matcher
     """
 
-    def match(string_to_split: str) -> List[str]:
+    def match(string_to_split: str) -> Union[List[str], None]:
         """
         Splits string on at max 1 occurence of pattern.
         """
         matches = re.split(f"({pattern})", string_to_split, maxsplit=1)
         return matches if len(matches) > 1 else None
 
-    def match_regular(string_to_match) -> Callable[[str], List[str]]:
+    def match_regular(string_to_match: str) -> Union[List[str], None]:
         """
         If string matches return matcher function.
         Returns nothing if no match
-        :param string_to_match:
-        :return:
         """
         if pattern in string_to_match:
-            return match
+            return match(string_to_match)
 
     # Searches through string for non alphanumeric char
     # If match then it is a regex
@@ -54,5 +53,5 @@ def walk(dir: str, pattern: str, symlinks: bool = False, hidden=False, vcs=False
         for file in files:
             match = matcher(file)
             if match:
-                print(match)
+                yield match
                 print(os.path.join(path, f"{Colors.GREEN}{file}{Colors.ENDC}"))
