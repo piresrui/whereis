@@ -2,7 +2,7 @@ import os
 import re
 from typing import List, Callable, Union
 
-from whereis.utils import Colors
+from lib.utils import Colors
 
 
 # TODO
