@@ -1,7 +1,7 @@
 import shutil
 import unittest
 import os
-from whereis.finder import walk, create_pattern
+from whereis.finder.walker import walk, create_pattern
 
 
 class TestWalk(unittest.TestCase):
